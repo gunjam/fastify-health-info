@@ -40,8 +40,8 @@ test('cli logs error - write fail', async () => {
   const path = join(__dirname, '../cli.js')
 
   // Can't write to root
-  await rejects(() => exec(`node ${path} /egg.json`), {
-    stderr: 'failed to write commit details to /egg.json\n',
+  await rejects(() => exec(`node ${path} /fake/egg.json`), {
+    stderr: 'failed to write commit details to /fake/egg.json\n',
     code: 1
   })
 })
