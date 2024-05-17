@@ -1,0 +1,177 @@
+# fastify-health-info
+
+Health check and info endpoints for fastify, with support for build and git
+details.
+
+## Install
+
+```
+npm install fastify-health-info
+```
+
+## Usage
+
+Register the plugin and your application will server `/info`, `/health`, and
+`/metrics` endpoints.
+
+```javascript
+const fastify = require('fastify')()
+
+fastify.register(require('fastify-health-info'))
+```
+
+They will give the following responses:
+
+`GET /health`
+```json
+{
+  "status": "UP"
+}
+```
+
+`GET /info`
+```json
+{
+  "node": {
+    // the version of node your application is running
+    "version": "20.0.0"
+  },
+  "application": {
+    // the name of your app from package.json
+    "name": "movies",
+    // the description of your app from package.json
+    "description": "movies database API",
+    // the version of your app from package.json
+    "version": "1.5.0"
+  }
+}
+```
+
+`GET /metrics`
+```json
+{
+  "uptime": 200,
+  "cpu": {
+    "user": 45,
+    "system": 55
+  },
+  "memory": {
+    "rss": 1000,
+    "heapTotal": 3000,
+    "heapUsed": 2000,
+    "external": 4000,
+    "arrayBuffers": 5000
+  }
+}
+```
+
+### Disabling endpoints
+
+You can turn off any of the endpoints you don't want with the following options:
+
+```javascript
+fastify.register(require('fastify-health-info'), {
+  // Disable /health endpoint
+  disableHealth: true,
+  // Disable /info endpoint
+  disableInfo: true,
+  // Disable /metrics endpoint
+  disableMetrics: true
+})
+```
+
+### Context path
+
+You can add a context path to the `fastify-health-info` endpoints by using the prefix option:
+
+```javascript
+// Will now serve on /checks/health, for example
+fastify.register(require('fastify-health-info'), {
+  prefix: '/checks'
+})
+```
+
+### Git details
+
+#### Commit details included in `/info`
+
+You can able to reporting of some git commit information in the `/info` endpoint
+by setting the `commitDetailsFrom` option:
+
+```javascript
+fastify.register(require('fastify-health-info'), {
+  commitDetailsFrom: 'git'
+})
+```
+
+A value of `git` will load commit information live from git on application startup. Alternatively you can load pre-built commit details from a file path, after first generating them using the `gitdetails` command line tool that comes with this pacakge. This is more useful where git will not be available and want details from build time.
+
+```
+npx gitdetails .git-details.json
+```
+
+```javascript
+fastify.register(require('fastify-health-info'), {
+  commitDetailsFrom: './.git-details.json'
+})
+```
+
+The JSON response from `/info` will now contain some commit information:
+
+```json
+{
+  "node": {
+    "version": "20.0.0"
+  },
+  "application": {
+    "name": "movies",
+    "description": "movies database API",
+    "version": "1.5.0"
+  },
+  "git": {
+    "branch": "main",
+    "commit": {
+      "id":"12969afe5ff6b56ee47a4dd823a0c275dbe5fe66",
+      "time":"2024-05-01T12:13:22.000Z"
+    }
+  },
+  "build":{
+    // Build time is only included when loading commit details from a built
+    // git-details JSON file.
+    "time":"2024-05-02T22:08:49.586Z"
+  }
+}
+```
+
+If HEAD is a tag commit, the application version will be the tagged version,
+otherwise it will be the last tag with a commit shorthash:
+
+```json
+{
+  ...
+  "application": {
+    // Tag commit at head
+    "version": "1.5.0"
+    // Commit not tagged
+    "version": "1.5.0-g12969af"
+  },
+  ...
+}
+```
+
+The git details are made available via the decorator `app.commitDetails` for use
+in your application:
+
+#### Accessing git details from decorated app
+
+```javascript
+const fastify = require('fastify')()
+
+fastify.register(require('fastify-health-info'), {
+  commitDetailsFrom: './.git-details.json'
+})
+
+fastify.get('/', function (request, reply) {
+  reply.send(`We're on branch ${fastify.commitDetails.branch}!`)
+})
+```

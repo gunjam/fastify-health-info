@@ -1,0 +1,26 @@
+{
+  "name": "fastify-health-info",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "commonjs",
+  "bin": {
+    "gitdetails": "cli.js"
+  },
+  "scripts": {
+    "test": "borp --coverage",
+    "lint": "biome check ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify-plugin": "^4.5.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.7.3",
+    "borp": "^0.13.0",
+    "fastify": "^4.27.0",
+    "proxyquire": "^2.1.3"
+  }
+}

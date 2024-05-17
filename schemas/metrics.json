@@ -1,0 +1,44 @@
+{
+  "description": "Service metrics",
+  "response": {
+    "200": {
+      "type": "object",
+      "properties": {
+        "uptime": {
+          "type": "number"
+        },
+        "cpu": {
+          "type": "object",
+          "properties": {
+            "user": {
+              "type": "number"
+            },
+            "system": {
+              "type": "number"
+            }
+          }
+        },
+        "memory": {
+          "type": "object",
+          "properties": {
+            "rss": {
+              "type": "number"
+            },
+            "heapTotal": {
+              "type": "number"
+            },
+            "heapUsed": {
+              "type": "number"
+            },
+            "external": {
+              "type": "number"
+            },
+            "arrayBuffers": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    }
+  }
+}
