@@ -15,6 +15,9 @@ const packageInfo = require('./package.json')
 const GL_BRANCH = process.env.CI_COMMIT_BRANCH ?? false
 const GL_MR_BRANCH = process.env.CI_MERGE_REQUEST_SOURCE_BRANCH_NAME ?? false
 
+// Github Actions env vars
+const GH_BRANCH = process.env.GITHUB_HEAD_REF?.replace('refs/heads/', '')
+
 // The maximum folders upwards the plugin will look for the parent
 // application's package.json file
 const MAX_PKG_JSON_SEARCH = 100
@@ -67,9 +70,9 @@ async function getCommitDetails() {
       getTag(),
       getCommitID(),
       getCommitTime(),
-      // For whatever reason the current branch name is not available in GitLab CI
-      // so we need to load it in from the supplied env var.
-      GL_BRANCH || GL_MR_BRANCH || getBranch()
+      // The current branch name is not available to git in Github Actions or
+      // Gitlab CI, we check env vars before trying to call git cli.
+      GH_BRANCH || GL_BRANCH || GL_MR_BRANCH || getBranch()
     ])
 
     const details = {
