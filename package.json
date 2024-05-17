@@ -1,7 +1,7 @@
 {
   "name": "fastify-health-info",
   "version": "0.0.0",
-  "description": "",
+  "description": "Health check and info endpoints for fastify, with support for build and git details.",
   "main": "index.js",
   "type": "commonjs",
   "bin": {
@@ -11,8 +11,12 @@
     "test": "borp --coverage",
     "lint": "biome check ."
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gunjam/fastify-health-info.git"
+  },
+  "keywords": ["fastify", "plugin", "healthcheck", "git"],
+  "author": "gunjam@gmail.com",
   "license": "ISC",
   "dependencies": {
     "fastify-plugin": "^4.5.1"
