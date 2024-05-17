@@ -25,5 +25,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install
-      - run: npm test
+      - env:
+          TMP_DIR: ${{ runner.temp }}
+        run: npm test
       - run: npm run lint
