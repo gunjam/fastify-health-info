@@ -8,13 +8,15 @@ const { tmpdir } = require('node:os')
 const { promisify } = require('node:util')
 const exec = promisify(require('node:child_process').exec)
 
+const tmpDir = process.env.TMP_DIR || tmpdir()
+
 test('cli writes file', async (t) => {
   // Create temp dir to store produced commit details json file
-  const tmp = await mkdtemp(join(tmpdir(), 'health'))
+  const tmp = await mkdtemp(join(tmpDir, 'health'))
   t.after(async () => rm(tmp, { recursive: true }))
 
   const path = join(__dirname, '../cli.js')
-  const outputFile = join(tmp, `${Date.now()}.json`)
+  const outputFile = join(tmp, '.git-details.json')
   const { stdout } = await exec(`node ${path} ${outputFile}`)
   const json = await readFile(outputFile, 'utf-8').then((f) => JSON.parse(f))
 
