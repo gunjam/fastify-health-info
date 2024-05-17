@@ -23,14 +23,14 @@ fastify.register(require('fastify-health-info'))
 They will give the following responses:
 
 `GET /health`
-```json
+```javascript
 {
   "status": "UP"
 }
 ```
 
 `GET /info`
-```json
+```javascript
 {
   "node": {
     // the version of node your application is running
@@ -48,7 +48,7 @@ They will give the following responses:
 ```
 
 `GET /metrics`
-```json
+```javascript
 {
   "uptime": 200,
   "cpu": {
@@ -118,7 +118,7 @@ fastify.register(require('fastify-health-info'), {
 
 The JSON response from `/info` will now contain some commit information:
 
-```json
+```javascript
 {
   "node": {
     "version": "20.0.0"
@@ -146,7 +146,7 @@ The JSON response from `/info` will now contain some commit information:
 If HEAD is a tag commit, the application version will be the tagged version,
 otherwise it will be the last tag with a commit shorthash:
 
-```json
+```javascript
 {
   ...
   "application": {
