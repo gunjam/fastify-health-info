@@ -1,6 +1,6 @@
 {
   "name": "fastify-health-info",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Health check and info endpoints for fastify, with support for build and git details.",
   "main": "index.js",
   "type": "commonjs",
@@ -15,7 +15,12 @@
     "type": "git",
     "url": "git+https://github.com/gunjam/fastify-health-info.git"
   },
-  "keywords": ["fastify", "plugin", "healthcheck", "git"],
+  "keywords": [
+    "fastify",
+    "plugin",
+    "healthcheck",
+    "git"
+  ],
   "author": "gunjam@gmail.com",
   "license": "ISC",
   "dependencies": {
