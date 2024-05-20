@@ -15,9 +15,13 @@
     "type": "git",
     "url": "git+https://github.com/gunjam/fastify-health-info.git"
   },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gunjam/fastify-health-info/issues"
+  },
+  "homepage": "https://github.com/gunjam/fastify-health-info/#readme",
   "keywords": ["fastify", "plugin", "healthcheck", "git"],
   "author": "gunjam@gmail.com",
-  "license": "ISC",
   "dependencies": {
     "fastify-plugin": "^4.5.1"
   },
