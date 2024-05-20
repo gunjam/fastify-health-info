@@ -4,6 +4,7 @@
   "description": "Health check and info endpoints for fastify, with support for build and git details.",
   "main": "index.js",
   "type": "commonjs",
+  "files": ["schemas", "cli.js", "index.js"],
   "bin": {
     "gitdetails": "cli.js"
   },
