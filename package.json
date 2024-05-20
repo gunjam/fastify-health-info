@@ -7,6 +7,7 @@
   "files": [
     "schemas",
     "cli.js",
+    "healthcheck.js",
     "index.js"
   ],
   "bin": {
