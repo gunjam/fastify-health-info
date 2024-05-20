@@ -6,7 +6,8 @@
   "type": "commonjs",
   "files": ["schemas", "cli.js", "index.js"],
   "bin": {
-    "gitdetails": "cli.js"
+    "gitdetails": "cli.js",
+    "healthcheck": "healthcheck.js"
   },
   "scripts": {
     "test": "borp --coverage",

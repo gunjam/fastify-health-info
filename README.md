@@ -175,3 +175,33 @@ fastify.get('/', function (request, reply) {
   reply.send(`We're on branch ${fastify.commitDetails.branch}!`)
 })
 ```
+
+### Health check
+
+This package comes with a health check script which you can use in docker images
+to call `/health`, which could be useful if curl or wget is not available inside
+your container.
+
+By default the script will call `http://localhost/health` on port `8080` or the value of the `PORT` environment variable:
+
+```
+npx healthcheck
+```
+
+If you have the health check mounted on a custom prefix, you can pass the full url:
+
+```
+npx healthcheck http://localhost:8080/checks/health
+```
+
+The script will log `healthy` and exit on code 0 on receipt of a 200 sucess
+response, otherwise will log an error and exit with code 1.
+
+#### Use in docker
+
+Example:
+
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=30s \
+  CMD ["/nodejs/bin/node", "./node_modules/.bin/healthcheck"]
+````
