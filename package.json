@@ -1,10 +1,14 @@
 {
   "name": "fastify-health-info",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Health check and info endpoints for fastify, with support for build and git details.",
   "main": "index.js",
   "type": "commonjs",
-  "files": ["schemas", "cli.js", "index.js"],
+  "files": [
+    "schemas",
+    "cli.js",
+    "index.js"
+  ],
   "bin": {
     "gitdetails": "cli.js",
     "healthcheck": "healthcheck.js"
@@ -22,7 +26,12 @@
     "url": "https://github.com/gunjam/fastify-health-info/issues"
   },
   "homepage": "https://github.com/gunjam/fastify-health-info/#readme",
-  "keywords": ["fastify", "plugin", "healthcheck", "git"],
+  "keywords": [
+    "fastify",
+    "plugin",
+    "healthcheck",
+    "git"
+  ],
   "author": "gunjam@gmail.com",
   "dependencies": {
     "fastify-plugin": "^4.5.1"
