@@ -11,7 +11,7 @@
         "noRedundantUseStrict": "off"
       }
     },
-    "ignore": ["coverage/", "node_modules/"]
+    "ignore": ["coverage/", "node_modules/", "package.json"]
   },
   "formatter": {
     "enabled": true,
