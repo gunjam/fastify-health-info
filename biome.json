@@ -11,7 +11,7 @@
         "noRedundantUseStrict": "off"
       }
     },
-    "ignore": ["coverage/", "node_modules/", "package.json"]
+    "ignore": ["coverage/", "node_modules/", "./package.json"]
   },
   "formatter": {
     "enabled": true,
@@ -20,7 +20,7 @@
     "indentWidth": 2,
     "lineWidth": 80,
     "lineEnding": "lf",
-    "ignore": ["coverage/", "node_modules/"]
+    "ignore": ["coverage/", "node_modules/", "./package.json"]
   },
   "javascript": {
     "formatter": {
