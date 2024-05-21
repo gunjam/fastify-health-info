@@ -182,26 +182,54 @@ This package comes with a health check script which you can use in docker images
 to call `/health`, which could be useful if curl or wget is not available inside
 your container.
 
-By default the script will call `http://localhost/health` on port `8080` or the value of the `PORT` environment variable:
-
-```
-npx healthcheck
-```
-
-If you have the health check mounted on a custom prefix, you can pass the full url:
-
-```
-npx healthcheck http://localhost:8080/checks/health
-```
-
 The script will log `healthy` and exit on code 0 on receipt of a 200 sucess
 response, otherwise will log an error and exit with code 1.
 
-#### Use in docker
-
-Example:
+By default the script will call `http://localhost/health` on port `8080` or the value of the `PORT` environment variable:
 
 ```dockerfile
-HEALTHCHECK --interval=30s --timeout=30s \
-  CMD ["/nodejs/bin/node", "./node_modules/.bin/healthcheck"]
+ENV PORT=3000
+
+# GET http://localhost:3000/health
+HEALTHCHECK CMD ./node_modules/.bin/healthcheck
+````
+
+If you have set a custom prefix you can set it using the path argument or the
+`HEALTH_PATH` environment variable:
+
+```dockerfile
+ENV HEALTH_PATH=/checks/health
+
+# GET http://localhost:8080/checks/health
+HEALTHCHECK CMD ./node_modules/.bin/healthcheck
+````
+
+You can also set a separate `HEALTH_BASE_PATH` var:
+
+```dockerfile
+ENV HEALTH_PATH=/checks/health
+ENV HEALTH_BASE_PATH=/context-path
+
+# GET http://localhost:8080/context-path/checks/health
+HEALTHCHECK CMD ./node_modules/.bin/healthcheck
+````
+
+You can change the names of the variables the script will look for with the
+`--port-var`, `--path-var` and `--base-var` arguments. This can be useful
+if you can't use variable expansion in distroless imgae with no shell.
+
+With shell:
+
+```dockerfile
+ENV PORT=${APP_PORT}
+
+# GET http://localhost:${APP_PORT}/health
+HEALTHCHECK CMD ./node_modules/.bin/healthcheck
+````
+
+Without:
+
+```dockerfile
+# GET http://localhost:${APP_PORT}/health
+HEALTHCHECK CMD ["./node_modules/.bin/healthcheck", "--port-var=APP_PORT"]
 ````
