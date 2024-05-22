@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.7.3",
-    "borp": "^0.13.0",
+    "borp": "^0.14.0",
     "fastify": "^4.27.0",
     "proxyquire": "^2.1.3"
   }
