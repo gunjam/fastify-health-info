@@ -215,21 +215,10 @@ HEALTHCHECK CMD ./node_modules/.bin/healthcheck
 ````
 
 You can change the names of the variables the script will look for with the
-`--port-var`, `--path-var` and `--base-var` arguments. This can be useful
-if you can't use variable expansion in distroless imgae with no shell.
-
-With shell:
-
-```dockerfile
-ENV PORT=${APP_PORT}
-
-# GET http://localhost:${APP_PORT}/health
-HEALTHCHECK CMD ./node_modules/.bin/healthcheck
-````
-
-Without:
+`--port-var`, `--path-var` and `--base-var` arguments - if you want to load a
+value from a pre-existing env var:
 
 ```dockerfile
 # GET http://localhost:${APP_PORT}/health
-HEALTHCHECK CMD ["./node_modules/.bin/healthcheck", "--port-var=APP_PORT"]
+HEALTHCHECK CMD ./node_modules/.bin/healthcheck --port-var=APP_PORT
 ````
