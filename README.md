@@ -1,5 +1,7 @@
 # fastify-health-info
 
+[![Coverage Status](https://coveralls.io/repos/github/gunjam/fastify-health-info/badge.svg?branch=main)](https://coveralls.io/github/gunjam/fastify-health-info?branch=main)
+
 Health check and info endpoints for fastify, with support for build and git
 details.
 

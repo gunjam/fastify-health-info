@@ -29,3 +29,12 @@ jobs:
           TMP_DIR: ${{ runner.temp }}
         run: npm test
       - run: npm run lint
+
+      # Save coverage report in Coveralls
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+        env:
+          CI: true
