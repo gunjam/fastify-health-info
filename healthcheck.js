@@ -24,9 +24,9 @@ async function healthCheck() {
       }
     })
 
-    const port = process.env[vars['port-var']] ?? 8080
-    const base = process.env[vars['base-var']] ?? '/'
-    const path = process.env[vars['path-var']] ?? '/health'
+    const port = process.env[vars['port-var']] || 8080
+    const base = process.env[vars['base-var']] || '/'
+    const path = process.env[vars['path-var']] || '/health'
 
     const url = new URL('http://localhost')
     url.port = port
