@@ -51,8 +51,13 @@ async function getCommitTime() {
 }
 
 async function getBranch() {
-  const { stdout: refs } = await exec('git symbolic-ref HEAD')
-  return refs.trim().match(/refs\/heads\/(.*)/)?.[1]
+  try {
+    const { stdout: refs } = await exec('git symbolic-ref HEAD')
+    return refs.trim().match(/refs\/heads\/(.*)/)?.[1]
+  } catch {
+    // No symbolic ref found, probably in detached state
+    return 'detached HEAD'
+  }
 }
 
 async function getTag() {

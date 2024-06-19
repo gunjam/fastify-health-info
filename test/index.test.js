@@ -154,6 +154,33 @@ test('commitDetails set branch name to main if on GitLab but no branch name is f
   })
 })
 
+test('commitDetails set branch name to main if on GitLab but no branch name is found', async (t) => {
+  const plugin = proxyquire('../index.js', {
+    'node:child_process': {
+      exec: (command, cb) => {
+        if (command === 'git symbolic-ref HEAD') {
+          cb(new Error(), { stderr: '8896a0c4cb68614d499c0093c742d2e0c0074bf7' })
+        } else {
+          mockExec(command, cb)
+        }
+      }
+    }
+  })
+
+  const app = fastify()
+  await app.register(plugin, { commitDetailsFrom: 'git' })
+
+  ok(Object.hasOwn(app, 'commitDetails'))
+  deepEqual(app.commitDetails, {
+    tag: '1.10.1',
+    branch: 'detached HEAD',
+    commit: {
+      id: '8896a0c4cb68614d499c0093c742d2e0c0074bf7',
+      time: '2023-08-24T10:28:44.000Z'
+    }
+  })
+})
+
 test('commitDetails has no tag if no tag is found', async (t) => {
   const plugin = proxyquire('../index.js', {
     'node:child_process': {
