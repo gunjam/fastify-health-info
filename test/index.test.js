@@ -34,6 +34,8 @@ beforeEach(() => {
   // biome-ignore lint/performance/noDelete: setting to undefined will convert to string value
   delete process.env.CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
   // biome-ignore lint/performance/noDelete: setting to undefined will convert to string value
+  delete process.env.CI_COMMIT_REF_NAME
+  // biome-ignore lint/performance/noDelete: setting to undefined will convert to string value
   delete process.env.GITHUB_HEAD_REF
 })
 
@@ -124,6 +126,27 @@ test('commitDetails takes branch name from CI_MERGE_REQUEST_SOURCE_BRANCH_NAME e
   deepEqual(app.commitDetails, {
     tag: '1.10.1',
     branch: 'branch-2',
+    commit: {
+      id: '8896a0c4cb68614d499c0093c742d2e0c0074bf7',
+      time: '2023-08-24T10:28:44.000Z'
+    }
+  })
+})
+
+test('commitDetails set branch name to main if on GitLab but no branch name is found', async (t) => {
+  process.env.CI_COMMIT_REF_NAME = '1.10.1'
+
+  const plugin = proxyquire('../index.js', {
+    'node:child_process': { exec: mockExec }
+  })
+
+  const app = fastify()
+  await app.register(plugin, { commitDetailsFrom: 'git' })
+
+  ok(Object.hasOwn(app, 'commitDetails'))
+  deepEqual(app.commitDetails, {
+    tag: '1.10.1',
+    branch: 'main',
     commit: {
       id: '8896a0c4cb68614d499c0093c742d2e0c0074bf7',
       time: '2023-08-24T10:28:44.000Z'
