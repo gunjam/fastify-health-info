@@ -159,7 +159,9 @@ test('commitDetails set branch name to main if on GitLab but no branch name is f
     'node:child_process': {
       exec: (command, cb) => {
         if (command === 'git symbolic-ref HEAD') {
-          cb(new Error(), { stderr: '8896a0c4cb68614d499c0093c742d2e0c0074bf7' })
+          cb(new Error(), {
+            stderr: '8896a0c4cb68614d499c0093c742d2e0c0074bf7'
+          })
         } else {
           mockExec(command, cb)
         }

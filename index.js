@@ -31,7 +31,7 @@ function getAppPackageJSON() {
       if (!pkgJsonPath.includes('node_modules')) {
         return require.main.require(join(path, 'package.json'))
       }
-    } catch { }
+    } catch {}
     path += '../'
   }
   /* c8 ignore next 3 */
@@ -80,7 +80,10 @@ async function getCommitDetails() {
       // Gitlab CI, we check env vars before trying to call git cli.
       // If there is no GL_BRANCH or GL_MR_BRANCH but there is a GL_REF_NAME we
       // are probably on a tagged commit on main, so use main
-      GH_BRANCH || GL_BRANCH || GL_MR_BRANCH || (GL_REF_NAME ? 'main' : getBranch())
+      GH_BRANCH ||
+        GL_BRANCH ||
+        GL_MR_BRANCH ||
+        (GL_REF_NAME ? 'main' : getBranch())
     ])
 
     const details = {
