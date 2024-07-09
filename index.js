@@ -29,7 +29,7 @@ function getAppPackageJSON() {
     try {
       const pkgJsonPath = join(require.main.path, path, 'package.json')
       if (!pkgJsonPath.includes('node_modules')) {
-        return require.main.require(join(path, 'package.json'))
+        return require.main.require(pkgJsonPath)
       }
     } catch {}
     path += '../'
