@@ -1,6 +1,6 @@
 {
   "name": "fastify-health-info",
-  "version": "0.4.1",
+  "version": "1.0.0",
   "description": "Health check and info endpoints for fastify, with support for build and git details.",
   "main": "index.js",
   "type": "commonjs",
