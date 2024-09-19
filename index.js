@@ -222,7 +222,7 @@ async function plugin(app, opts) {
 
 module.exports = fp(plugin, {
   name: packageInfo.name,
-  fastify: '4.x'
+  fastify: '5.x'
 })
 
 module.exports.plugin = plugin
