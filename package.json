@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "commonjs",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.14.0"
   },
   "files": [
     "schemas",
@@ -38,12 +38,12 @@
   ],
   "author": "gunjam@gmail.com",
   "dependencies": {
-    "fastify-plugin": "^5.0.0"
+    "fastify-plugin": "^5.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.1",
-    "borp": "^0.17.0",
-    "fastify": "^5.0.0",
+    "@biomejs/biome": "^1.9.4",
+    "borp": "^0.19.0",
+    "fastify": "^5.2.1",
     "proxyquire": "^2.1.3"
   }
 }
