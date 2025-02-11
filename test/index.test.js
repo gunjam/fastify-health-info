@@ -2,12 +2,9 @@
 
 const { ok, equal, deepEqual, rejects } = require('node:assert/strict')
 const { test, beforeEach } = require('node:test')
-const { promisify } = require('node:util')
 const { join } = require('node:path')
-const exec = promisify(require('node:child_process').exec)
 const proxyquire = require('proxyquire')
 const fastify = require('fastify')
-const testPackageJSON = require('./fixtures/package.json')
 const testDetails = require('./fixtures/test-git-details.json')
 
 function mockExec(command, cb) {
@@ -30,7 +27,7 @@ function mockExec(command, cb) {
 }
 
 function mockFindPackageJSON() {
-  return testPackageJSON
+  return require.resolve('./fixtures/package.json')
 }
 
 beforeEach(() => {

@@ -2,6 +2,8 @@
 
 const { findPackageJSON } = require('node:module')
 const { writeFile, readFile } = require('node:fs/promises')
+const { join } = require('node:path')
+const { pathToFileURL } = require('node:url')
 const { promisify } = require('node:util')
 const exec = promisify(require('node:child_process').exec)
 const fp = require('fastify-plugin')
@@ -123,9 +125,10 @@ async function routes(app, opts) {
   }
 
   // Load package.json information from parent application
-  const packageDetails = findPackageJSON('..', __filename)
+  const packagePath = findPackageJSON(pathToFileURL(join(__dirname, '..')))
 
-  if (packageDetails) {
+  if (packagePath) {
+    const packageDetails = require(packagePath)
     info.application = {
       name: packageDetails.name,
       description: packageDetails.description,
