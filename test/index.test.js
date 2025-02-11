@@ -7,6 +7,7 @@ const { join } = require('node:path')
 const exec = promisify(require('node:child_process').exec)
 const proxyquire = require('proxyquire')
 const fastify = require('fastify')
+const testPackageJSON = require('./fixtures/package.json')
 const testDetails = require('./fixtures/test-git-details.json')
 
 function mockExec(command, cb) {
@@ -28,6 +29,10 @@ function mockExec(command, cb) {
   }
 }
 
+function mockFindPackageJSON() {
+  return testPackageJSON
+}
+
 beforeEach(() => {
   // biome-ignore lint/performance/noDelete: setting to undefined will convert to string value
   delete process.env.CI_COMMIT_BRANCH
@@ -41,7 +46,8 @@ beforeEach(() => {
 
 test('does not decorate fastify with commitDetails if `commitDetailsFrom` not set', async (t) => {
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -52,7 +58,8 @@ test('does not decorate fastify with commitDetails if `commitDetailsFrom` not se
 
 test('decorates fastify instance with commitDetails from git', async (t) => {
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -73,7 +80,8 @@ test('commitDetails takes branch name from GITHUB_HEAD_REF env var if available'
   process.env.GITHUB_HEAD_REF = 'refs/heads/branch-1'
 
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -95,7 +103,8 @@ test('commitDetails takes branch name from CI_COMMIT_BRANCH env var if available
   process.env.CI_COMMIT_REF_NAME = 'branch-2'
 
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -116,7 +125,8 @@ test('commitDetails takes branch name from CI_MERGE_REQUEST_SOURCE_BRANCH_NAME e
   process.env.CI_MERGE_REQUEST_SOURCE_BRANCH_NAME = 'branch-2'
 
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -137,7 +147,8 @@ test('commitDetails set branch name to main if on GitLab but no branch name is f
   process.env.CI_COMMIT_REF_NAME = '1.10.1'
 
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -166,7 +177,8 @@ test('commitDetails set branch name to main if on GitLab but no branch name is f
           mockExec(command, cb)
         }
       }
-    }
+    },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -193,7 +205,8 @@ test('commitDetails has no tag if no tag is found', async (t) => {
         }
         cb(new Error('bang'), { stderr: 'error' })
       }
-    }
+    },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -211,7 +224,8 @@ test('commitDetails has no tag if no tag is found', async (t) => {
 
 test('decorates fastify instance with commitDetails from file', async (t) => {
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -225,7 +239,8 @@ test('decorates fastify instance with commitDetails from file', async (t) => {
 
 test('throw error if commitDetailsFrom is not a string', async (t) => {
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -238,7 +253,8 @@ test('throw error if commitDetailsFrom is not a string', async (t) => {
 
 test('throw error if commit details file load fails', async (t) => {
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -260,7 +276,8 @@ test('throw error if loading commit details from git fails', async (t) => {
       exec(_command, cb) {
         cb(new Error('bang!'))
       }
-    }
+    },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -278,7 +295,8 @@ test('throw error if loading commit details from git fails', async (t) => {
 
 test('/health is loaded', async (t) => {
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -294,7 +312,8 @@ test('/health is loaded', async (t) => {
 
 test('/health is loaded on prefix', async (t) => {
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -310,7 +329,8 @@ test('/health is loaded on prefix', async (t) => {
 
 test('/health is disabled', async (t) => {
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -323,7 +343,8 @@ test('/health is disabled', async (t) => {
 
 test('/metrics is loaded', async (t) => {
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const cpuMock = {
@@ -361,7 +382,8 @@ test('/metrics is loaded', async (t) => {
 
 test('/metrics is loaded on prefix', async (t) => {
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -374,7 +396,8 @@ test('/metrics is loaded on prefix', async (t) => {
 
 test('/metrics is disabled', async (t) => {
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -385,13 +408,17 @@ test('/metrics is disabled', async (t) => {
   equal(res.statusCode, 404)
 })
 
-test('/info is loaded', async () => {
-  // Run in separate process so it detects the test package.json of its
-  // parent app
-  const path = join(__dirname, './fixtures/app/sub/default.js')
-  const { stdout } = await exec(`node ${path}`)
+test('/info is loaded', async (t) => {
+  const plugin = proxyquire('../index.js', {
+    'node:module': { findPackageJSON: mockFindPackageJSON }
+  })
 
-  deepEqual(JSON.parse(stdout), {
+  const app = fastify()
+  await app.register(plugin, { disableMetrics: true })
+  t.after(async () => app.close())
+
+  const res = await app.inject('/info')
+  deepEqual(res.json(), {
     application: {
       name: 'test-app',
       description: 'My test app',
@@ -403,13 +430,35 @@ test('/info is loaded', async () => {
   })
 })
 
-test('/info is loaded with git details from JSON', async () => {
-  // Run in separate process so it detects the test package.json of its
-  // parent app
-  const path = join(__dirname, './fixtures/app/sub/git-from-path.js')
-  const { stdout } = await exec(`node ${path}`)
+test('/info is loaded (package.json not found)', async (t) => {
+  const plugin = require('../index.js')
 
-  deepEqual(JSON.parse(stdout), {
+  const app = fastify()
+  await app.register(plugin, { disableMetrics: true })
+  t.after(async () => app.close())
+
+  const res = await app.inject('/info')
+  deepEqual(res.json(), {
+    node: {
+      version: process.versions.node
+    }
+  })
+})
+
+test('/info is loaded with git details from JSON', async (t) => {
+  const plugin = proxyquire('../index.js', {
+    'node:module': { findPackageJSON: mockFindPackageJSON }
+  })
+
+  const app = fastify()
+  await app.register(plugin, {
+    disableMetrics: true,
+    commitDetailsFrom: join(__dirname, './fixtures/test-git-details.json')
+  })
+  t.after(async () => app.close())
+
+  const res = await app.inject('/info')
+  deepEqual(res.json(), {
     application: {
       name: 'test-app',
       description: 'My test app',
@@ -433,7 +482,8 @@ test('/info is loaded with git details from JSON', async () => {
 
 test('/info is loaded on prefix', async (t) => {
   const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
+    'node:child_process': { exec: mockExec },
+    'node:module': { findPackageJSON: mockFindPackageJSON }
   })
 
   const app = fastify()
@@ -445,9 +495,7 @@ test('/info is loaded on prefix', async (t) => {
 })
 
 test('/info is disabled', async (t) => {
-  const plugin = proxyquire('../index.js', {
-    'node:child_process': { exec: mockExec }
-  })
+  const plugin = require('../index.js')
 
   const app = fastify()
   await app.register(plugin, { disableInfo: true })

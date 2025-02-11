@@ -1,10 +1,10 @@
 'use strict'
 
-const fp = require('fastify-plugin')
+const { findPackageJSON } = require('node:module')
 const { writeFile, readFile } = require('node:fs/promises')
-const { join } = require('node:path')
 const { promisify } = require('node:util')
 const exec = promisify(require('node:child_process').exec)
+const fp = require('fastify-plugin')
 const healthSchema = require('./schemas/health.json')
 const infoSchema = require('./schemas/info.json')
 const metricsSchema = require('./schemas/metrics.json')
@@ -18,27 +18,6 @@ const GL_REF_NAME = process.env.CI_COMMIT_REF_NAME ?? false
 
 // Github Actions env vars
 const GH_BRANCH = process.env.GITHUB_HEAD_REF?.replace('refs/heads/', '')
-
-// The maximum folders upwards the plugin will look for the parent
-// application's package.json file
-const MAX_PKG_JSON_SEARCH = 100
-
-function getAppPackageJSON() {
-  let path = './'
-  for (let i = 0; i < MAX_PKG_JSON_SEARCH; i++) {
-    try {
-      const pkgJsonPath = join(require.main.path, path, 'package.json')
-      if (!pkgJsonPath.includes('node_modules')) {
-        return require.main.require(pkgJsonPath)
-      }
-    } catch {}
-    path += '../'
-  }
-  /* c8 ignore next 3 */
-  throw new Error(
-    `Could not find package.json after traversing up ${MAX_PKG_JSON_SEARCH} directories`
-  )
-}
 
 async function getCommitID() {
   const { stdout: id } = await exec('git rev-parse HEAD')
@@ -136,23 +115,31 @@ async function routes(app, opts) {
     disableMetrics = false
   } = opts
 
-  // Load package.json information from parent application
-  const packageDetails = getAppPackageJSON()
-
   // JSON data to serve from /info endpoint
   const info = {
     node: {
       version: process.versions.node
-    },
-    application: {
+    }
+  }
+
+  // Load package.json information from parent application
+  const packageDetails = findPackageJSON('..', __filename)
+
+  if (packageDetails) {
+    info.application = {
       name: packageDetails.name,
       description: packageDetails.description,
       version: packageDetails.version
     }
+  } else {
+    app.log.warn(
+      'fastify-health-info: could not find package.json file, cannot add app data to /info'
+    )
   }
 
   // Add git information to /info data, if available
   if (app.hasDecorator('commitDetails')) {
+    info.application ??= {}
     info.application.version = app.commitDetails.tag ?? info.application.version
     info.git = {
       branch: app.commitDetails.branch,

@@ -148,6 +148,11 @@ test('Logs error - 500', async (t) => {
 })
 
 test('Logs error - no response', async () => {
+  const app = fastify()
+  const url = await app.listen()
+  process.env.PORT = new URL(url).port
+  app.close()
+
   const path = join(__dirname, '../healthcheck.js')
   await rejects(async () => exec(`node ${path}`), {
     name: 'Error',
